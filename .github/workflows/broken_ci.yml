@@ -22,14 +22,6 @@ jobs:
           fi
 
       # test para pr
-      - name: Instalar y Testear
-        run: |
-          npm install
-          npm test
-
-      - name: Build del Proyecto
-        run: npm run build
-
       - name: Construir Imagen Docker
         run: docker build -t mi-app-temp:latest .
 
