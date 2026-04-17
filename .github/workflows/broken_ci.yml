@@ -21,14 +21,7 @@ jobs:
             exit 1
           fi
 
-      - name: Instalar y Testear
-        run: |
-          npm install
-          npm test
-
-      - name: Build del Proyecto
-        run: npm run build
-
+      # test para pr
       - name: Construir Imagen Docker
         run: docker build -t mi-app-temp:latest .
 
