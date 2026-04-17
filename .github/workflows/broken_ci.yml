@@ -9,5 +9,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Fake step that fails
-        run: exit 1
+      - name: Descargar codigo
+        uses: actions/checkout@v4  # <--- Dos espacios más hacia adentro
+
+      - name: Validar nombre de rama
+        run: |                    # <--- Dos espacios más hacia adentro
+          BRANCH_NAME="${{ github.head_ref }}"
+          REGEX="^([0-9]{4}-.+|feature\/.+|bugfix\/.+)"
+          if [[ ! $BRANCH_NAME =~ $REGEX ]]; then
+            echo "ERROR: Rama mal nombrada"
+            exit 1
+          fi
+
+      - name: Instalar y Testear
+        run: |
+          npm install
+          npm test
+
+      - name: Build del Proyecto
+        run: npm run build
+
+      - name: Construir Imagen Docker
+        run: docker build -t mi-app-temp:latest .
+
+      - name: Mostrar Tamaño de Imagen
+        run: |
+          echo "### Resumen Docker" >> $GITHUB_STEP_SUMMARY
+          SIZE=$(docker images --format "{{.Size}}" mi-app-temp:latest)
+          echo "El tamaño es: $SIZE" >> $GITHUB_STEP_SUMMARY

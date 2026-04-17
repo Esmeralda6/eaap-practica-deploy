@@ -1,0 +1,28 @@
+name: Build and Test CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  build-job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install and Test
+        run: |
+          npm install
+          npm test
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Build Docker Image
+        run: docker build -t mi-app:${{ github.sha }} .
+
+      - name: Check Image Size
+        run: |
+          docker images mi-app:${{ github.sha }}
